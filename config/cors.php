@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://pusatdata.hasanahtours.com/', 'http://localhost:5173'],
+    'allowed_origins' => ['https://pusatdata.hasanahtours.com', 'http://localhost:5173'],
 
     'allowed_origins_patterns' => [],
 
