@@ -199,14 +199,20 @@ class BookingController extends Controller
                     'data' => ['sisa_kursi' => $sisaKursi, 'dibutuhkan' => $totalJamaah]
                 ], 422);
             }
+            $totalJamaahDewasa = 0;
+            foreach ($request->jamaah as $jamaahInput) {
+                $birthDate = new \Carbon\Carbon($jamaahInput['tanggal_lahir']);
+                $age = $birthDate->age;
+                if ($age >= 2) {
+                    $totalJamaahDewasa++;
+                }
+            }
 
             $kodeBooking = Booking::generateKodeBooking();
-            $totalHarga = 0;
             $jamaahIds = [];
             $mainJamaahId = null;
+
             foreach ($request->jamaah as $index => $jamaahInput) {
-                $hargaJamaah = $this->calculateJamaahPrice($package, $jamaahInput);
-                $totalHarga += $hargaJamaah;
                 $isMainJamaah = ($index === 0);
 
                 $jamaah = Jamaah::where('no_ktp', $jamaahInput['no_ktp'])->first();
@@ -229,20 +235,17 @@ class BookingController extends Controller
                     'jamaah_id' => $jamaah->id,
                     'is_main_jamaah' => $isMainJamaah,
                     'hubungan_dengan_main' => $isMainJamaah ? null : ($jamaahInput['hubungan_dengan_main'] ?? 'Keluarga'),
-                    'harga_paket' => $hargaJamaah
                 ];
 
                 if ($isMainJamaah) {
                     $mainJamaahId = $jamaah->id;
                 }
             }
-
             $booking = Booking::create([
                 'kode_booking' => $kodeBooking,
                 'kode_paket' => $request->kode_paket,
                 'main_jamaah_id' => $mainJamaahId,
                 'total_jamaah' => $totalJamaah,
-                'total_harga' => $totalHarga,
                 'status' => 'pending',
                 'notes' => $request->notes,
             ]);
@@ -254,11 +257,9 @@ class BookingController extends Controller
                     'main_jamaah_id' => $jamaahData['is_main_jamaah'] ? null : $mainJamaahId,
                     'is_main_jamaah' => $jamaahData['is_main_jamaah'],
                     'hubungan_dengan_main' => $jamaahData['hubungan_dengan_main'],
-                    'harga_paket' => $jamaahData['harga_paket'],
                     'status' => 'active',
                 ]);
             }
-
             $newTotalBooked = $package->total_booked + $totalJamaah;
             $newBookedPpiu = $package->booked_ppiu + $totalJamaah;
             $newSisaSeat = $package->total_kursi - $newTotalBooked;
@@ -280,7 +281,7 @@ class BookingController extends Controller
                     'kode_booking' => $kodeBooking,
                     'kode_paket' => $request->kode_paket,
                     'total_jamaah' => $totalJamaah,
-                    'total_harga' => $totalHarga,
+                    'total_jamaah_dewasa' => $totalJamaahDewasa,
                     'status' => 'pending',
                     'main_jamaah' => [
                         'nama' => $mainJamaah->nama,
@@ -293,7 +294,11 @@ class BookingController extends Controller
                         'booked_ppiu' => $newBookedPpiu,
                         'booked_ghg' => $package->booked_ghg,
                         'sisa_seat' => $newSisaSeat
-                    ]
+                    ],
+                    'harga_breakdown' => "Jamaah dewasa ({$totalJamaahDewasa}): " .
+                        ($totalJamaahDewasa == 1 ? "Single" :
+                            ($totalJamaahDewasa == 2 ? "Ber-2" :
+                                ($totalJamaahDewasa == 3 ? "Ber-3" : "Ber-4")))
                 ]
             ], 200);
 
@@ -427,14 +432,25 @@ class BookingController extends Controller
     }
 
 
-    private function calculateJamaahPrice(Packages $package, array $jamaahData): float
+    private function calculateJamaahPrice(Packages $package, array $jamaahData, int $totalJamaahDewasa): float
     {
         $birthDate = new \Carbon\Carbon($jamaahData['tanggal_lahir']);
         $age = $birthDate->age;
+
         if ($age < 2) {
             return (float) $package->hargabayi;
-        } else {
-            return (float) $package->hargaber2;
+        }
+
+        switch ($totalJamaahDewasa) {
+            case 1:
+                return (float) $package->hargaber1;
+            case 2:
+                return (float) $package->hargaber2;
+            case 3:
+                return (float) $package->hargaber3;
+            case 4:
+            default:
+                return (float) $package->hargaber4;
         }
     }
 }

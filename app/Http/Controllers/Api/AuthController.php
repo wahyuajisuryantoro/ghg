@@ -53,7 +53,13 @@ class AuthController extends Controller
             'message' => 'Generate Token Berhasil',
             'data' => [
                 'token' => $token,
-                'expired' => $expiredAt->format('Y-m-d H:i:s')
+                'expired' => $expiredAt->format('Y-m-d H:i:s'),
+                'expired_timestamp' => $expiredAt->timestamp,
+                'client' => [
+                    'id' => $client->id,
+                    'client_id' => $client->client_id,
+                    'client_name' => $client->client_name
+                ]
             ]
         ], 200);
     }

@@ -12,7 +12,6 @@ class BookingJamaah extends Model
         'main_jamaah_id',
         'is_main_jamaah',
         'hubungan_dengan_main',
-        'harga_paket',
         'status',
     ];
 

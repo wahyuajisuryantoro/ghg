@@ -44,8 +44,11 @@ Route::prefix('v1')->group(function () {
             Route::post('/buatAirlines', [AirlinesController::class, 'create']);
             Route::post('/editAirlines', [AirlinesController::class, 'update']);
             Route::post('/buatCountry', [CountryController::class, 'create']);
+            Route::post('/editCountry', [CountryController::class, 'update']);
             Route::post('/buatCities', [CitiesController::class, 'create']);
+            Route::post('/editCities', [CitiesController::class, 'update']);
             Route::post('/buatTipePaket', [PackageTypeController::class, 'create']);
+            Route::post('/editTipePaket', [PackageTypeController::class, 'update']);
             Route::post('/buatHotel', [HotelController::class, 'create']);
             Route::post('/editHotel', [HotelController::class, 'update']);
             Route::post('/deleteHotel', [HotelController::class, 'delete']);

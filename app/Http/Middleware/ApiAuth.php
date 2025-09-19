@@ -6,7 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\Api\ApiTokens;
 use App\Models\Api\ApiClients;
-use Symfony\Component\HttpFoundation\Response;
 
 class ApiAuth
 {
@@ -15,7 +14,7 @@ class ApiAuth
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         // Ambil token dari header
         $token = $request->header('Token');

@@ -54,6 +54,15 @@ class HotelController extends Controller
                     'hotellong' => $hotel->hotellong,
                     'preview_image' => $hotel->images->first() ? url($hotel->images->first()->urlimage) : null,
                     'image_count' => $hotel->images->count(),
+                    'images' => $hotel->images->map(function ($image) {
+                        return [
+                            'id' => $image->id,
+                            'idhotel' => $image->idhotel,
+                            'fasilitas' => $image->fasilitas,
+                            'urlimage' => $image->urlimage,
+                            'full_url' => $image->full_url,
+                        ];
+                    })
                 ];
             });
 
@@ -309,15 +318,6 @@ class HotelController extends Controller
                 'idhotel' => 'required|integer|exists:hotels,id',
                 'fasilitas' => 'required|string|max:255',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:8120',
-            ],
-            [
-                'idhotel.required' => 'ID hotel wajib diisi',
-                'idhotel.exists' => 'Hotel tidak ditemukan',
-                'fasilitas.required' => 'Fasilitas hotel wajib diisi',
-                'image.required' => 'File gambar wajib diisi',
-                'image.image' => 'File harus berupa gambar',
-                'image.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif',
-                'image.max' => 'Ukuran file maksimal 8MB',
             ]
         );
 
@@ -332,9 +332,7 @@ class HotelController extends Controller
         try {
             $image = $request->file('image');
             $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $path = 'assets/images/hotel/' . $filename;
-
-            $image->storeAs('assets/images/hotel', $filename, 'public');
+            $path = $image->storeAs('hotel', $filename, 'public');
 
             $hotelImage = HotelImage::create([
                 'idhotel' => $request->idhotel,
@@ -346,7 +344,7 @@ class HotelController extends Controller
                 'status' => 200,
                 'message' => 'Berhasil mengunggah gambar',
                 'data' => [
-                    'idhotelimage' => $hotelImage->idhotelimage,
+                    'id' => $hotelImage->id,
                     'idhotel' => $hotelImage->idhotel,
                     'fasilitas' => $hotelImage->fasilitas,
                     'urlimage' => $hotelImage->urlimage,
@@ -365,6 +363,7 @@ class HotelController extends Controller
         }
     }
 
+
     public function editHotelImage(Request $request): JsonResponse
     {
         $validator = Validator::make(
@@ -374,14 +373,6 @@ class HotelController extends Controller
                 'idhotel' => 'nullable|integer|exists:hotels,id',
                 'fasilitas' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            ],
-            [
-                'id.required' => 'ID hotel image wajib diisi',
-                'id.exists' => 'Hotel image tidak ditemukan',
-                'idhotel.exists' => 'Hotel tidak ditemukan',
-                'image.image' => 'File harus berupa gambar',
-                'image.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif',
-                'image.max' => 'Ukuran file maksimal 5MB',
             ]
         );
 
@@ -395,6 +386,7 @@ class HotelController extends Controller
 
         try {
             $hotelImage = HotelImage::findOrFail($request->id);
+
             if ($request->has('idhotel')) {
                 $hotelImage->idhotel = $request->idhotel;
             }
@@ -407,11 +399,11 @@ class HotelController extends Controller
                 if ($hotelImage->urlimage && Storage::disk('public')->exists($hotelImage->urlimage)) {
                     Storage::disk('public')->delete($hotelImage->urlimage);
                 }
+
                 $image = $request->file('image');
                 $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $path = 'assets/images/hotel/' . $filename;
 
-                $image->storeAs('assets/images/hotel', $filename, 'public');
+                $path = $image->storeAs('hotel', $filename, 'public');
                 $hotelImage->urlimage = $path;
             }
 
@@ -439,6 +431,7 @@ class HotelController extends Controller
             ], 500);
         }
     }
+
 
     public function deleteHotelImage(Request $request): JsonResponse
     {

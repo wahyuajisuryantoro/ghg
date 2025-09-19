@@ -98,17 +98,17 @@ class PackageController extends Controller
                     'hotels' => [
                         'mekka' => [
                             'id' => $package->hotelMekka->id ?? null,
-                            'name' => $package->hotelMekka->name ?? null,
+                            'name' => $package->hotelMekka->hotelname ?? null,
                             'city' => $package->hotelMekka->city->name ?? null,
                         ],
                         'medina' => [
                             'id' => $package->hotelMedina->id ?? null,
-                            'name' => $package->hotelMedina->name ?? null,
+                            'name' => $package->hotelMedina->hotelname ?? null,
                             'city' => $package->hotelMedina->city->name ?? null,
                         ],
                         'jedda' => $package->hotel_jedda ? [
                             'id' => $package->hotelJedda->id ?? null,
-                            'name' => $package->hotelJedda->name ?? null,
+                            'name' => $package->hotelJedda->hotelname ?? null,
                             'city' => $package->hotelJedda->city->name ?? null,
                         ] : null,
                     ],
@@ -124,6 +124,7 @@ class PackageController extends Controller
                     'tanggal_berangkat' => $package->tanggal_berangkat,
                     'kurs_tetap' => $package->kurs_tetap,
                     'harga' => [
+                        'ber1' => $package->hargaber1,
                         'ber2' => $package->hargaber2,
                         'ber3' => $package->hargaber3,
                         'ber4' => $package->hargaber4,
@@ -202,17 +203,17 @@ class PackageController extends Controller
                 'hotels' => [
                     'mekka' => [
                         'id' => $package->hotelMekka->id ?? null,
-                        'name' => $package->hotelMekka->name ?? null,
+                        'name' => $package->hotelMekka->hotelname ?? null,
                         'city' => $package->hotelMekka->city->name ?? null,
                     ],
                     'medina' => [
                         'id' => $package->hotelMedina->id ?? null,
-                        'name' => $package->hotelMedina->name ?? null,
+                        'name' => $package->hotelMedina->hotelname ?? null,
                         'city' => $package->hotelMedina->city->name ?? null,
                     ],
                     'jedda' => $package->hotel_jedda ? [
                         'id' => $package->hotelJedda->id ?? null,
-                        'name' => $package->hotelJedda->name ?? null,
+                        'name' => $package->hotelJedda->hotelname ?? null,
                         'city' => $package->hotelJedda->city->name ?? null,
                     ] : null,
                 ],
@@ -232,6 +233,7 @@ class PackageController extends Controller
                 ],
                 'harga' => [
                     'kurs_tetap' => $package->kurs_tetap,
+                    'ber1' => $package->hargaber1,
                     'ber2' => $package->hargaber2,
                     'ber3' => $package->hargaber3,
                     'ber4' => $package->hargaber4,
@@ -277,6 +279,7 @@ class PackageController extends Controller
                 'no_penerbangan' => 'required|string|max:255',
                 'tanggal_berangkat' => 'required|date|after:today',
                 'kurs_tetap' => 'required|integer|min:1',
+                'hargaber1' => 'required|numeric|min:0',
                 'hargaber2' => 'required|numeric|min:0',
                 'hargaber3' => 'required|numeric|min:0',
                 'hargaber4' => 'required|numeric|min:0',
@@ -348,6 +351,7 @@ class PackageController extends Controller
                 'no_penerbangan' => $request->no_penerbangan,
                 'tanggal_berangkat' => $request->tanggal_berangkat,
                 'kurs_tetap' => $request->kurs_tetap,
+                'hargaber1' => $request->hargaber1,
                 'hargaber2' => $request->hargaber2,
                 'hargaber3' => $request->hargaber3,
                 'hargaber4' => $request->hargaber4,
@@ -395,6 +399,7 @@ class PackageController extends Controller
                 'no_penerbangan' => 'nullable|string|max:255',
                 'tanggal_berangkat' => 'nullable|date',
                 'kurs_tetap' => 'nullable|integer|min:1',
+                'hargaber1' => 'nullable|numeric|min:0',
                 'hargaber2' => 'nullable|numeric|min:0',
                 'hargaber3' => 'nullable|numeric|min:0',
                 'hargaber4' => 'nullable|numeric|min:0',
@@ -459,6 +464,7 @@ class PackageController extends Controller
                 'no_penerbangan',
                 'tanggal_berangkat',
                 'kurs_tetap',
+                 'hargaber1',
                 'hargaber2',
                 'hargaber3',
                 'hargaber4',

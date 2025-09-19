@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class HotelImage extends Model
 {
     protected $table = 'hotel_images';
-    
+
     protected $fillable = [
         'idhotel',
         'fasilitas',
@@ -21,6 +21,7 @@ class HotelImage extends Model
 
     public function getFullUrlAttribute()
     {
-        return url($this->urlimage);
+        return asset('storage/' . $this->urlimage);
     }
+
 }

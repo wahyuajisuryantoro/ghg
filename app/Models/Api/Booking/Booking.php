@@ -12,7 +12,6 @@ class Booking extends Model
         'kode_paket',
         'main_jamaah_id',
         'total_jamaah',
-        'total_harga',
         'status',
         'notes',
     ];
