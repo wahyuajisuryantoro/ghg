@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Middleware\Cors;
 use App\Http\Middleware\ApiAuth;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Middleware\HandleCors;
@@ -16,9 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(HandleCors::class);
+        $middleware->appendToGroup('api', Cors::class);
         $middleware->alias([
-            
+
             'api.auth' => ApiAuth::class,
         ]);
     })
