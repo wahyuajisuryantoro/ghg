@@ -317,23 +317,23 @@ class PackageController extends Controller
         }
 
         try {
-            $hotelMekka = Hotels::with('city')->find($request->hotel_mekka);
-            if ($hotelMekka->city->name !== 'Mekka') {
-                return response()->json([
-                    'status' => 422,
-                    'message' => 'Hotel Mekka harus berlokasi di kota Mekka',
-                    'data' => null
-                ], 422);
-            }
+            // $hotelMekka = Hotels::with('city')->find($request->hotel_mekka);
+            // if ($hotelMekka->city->name !== 'Mekka') {
+            //     return response()->json([
+            //         'status' => 422,
+            //         'message' => 'Hotel Mekka harus berlokasi di kota Mekka',
+            //         'data' => null
+            //     ], 422);
+            // }
 
-            $hotelMedina = Hotels::with('city')->find($request->hotel_medina);
-            if ($hotelMedina->city->name !== 'Madinah') {
-                return response()->json([
-                    'status' => 422,
-                    'message' => 'Hotel Medina harus berlokasi di kota Madinah',
-                    'data' => null
-                ], 422);
-            }
+            // $hotelMedina = Hotels::with('city')->find($request->hotel_medina);
+            // if ($hotelMedina->city->name !== 'Madinah') {
+            //     return response()->json([
+            //         'status' => 422,
+            //         'message' => 'Hotel Medina harus berlokasi di kota Madinah',
+            //         'data' => null
+            //     ], 422);
+            // }
 
             $kodePacket = $this->generateKodePacket();
 
@@ -429,27 +429,27 @@ class PackageController extends Controller
         try {
             $package = Packages::where('kode_paket', $request->kode_paket)->first();
 
-            if ($request->has('hotel_mekka')) {
-                $hotelMekka = Hotels::with('city')->find($request->hotel_mekka);
-                if ($hotelMekka->city->name !== 'Mekka') {
-                    return response()->json([
-                        'status' => 422,
-                        'message' => 'Hotel Mekka harus berlokasi di kota Mekka',
-                        'data' => null
-                    ], 422);
-                }
-            }
+            // if ($request->has('hotel_mekka')) {
+            //     $hotelMekka = Hotels::with('city')->find($request->hotel_mekka);
+            //     if ($hotelMekka->city->name !== 'Mekka') {
+            //         return response()->json([
+            //             'status' => 422,
+            //             'message' => 'Hotel Mekka harus berlokasi di kota Mekka',
+            //             'data' => null
+            //         ], 422);
+            //     }
+            // }
 
-            if ($request->has('hotel_medina')) {
-                $hotelMedina = Hotels::with('city')->find($request->hotel_medina);
-                if ($hotelMedina->city->name !== 'Madinah') {
-                    return response()->json([
-                        'status' => 422,
-                        'message' => 'Hotel Medina harus berlokasi di kota Madinah',
-                        'data' => null
-                    ], 422);
-                }
-            }
+            // if ($request->has('hotel_medina')) {
+            //     $hotelMedina = Hotels::with('city')->find($request->hotel_medina);
+            //     if ($hotelMedina->city->name !== 'Madinah') {
+            //         return response()->json([
+            //             'status' => 422,
+            //             'message' => 'Hotel Medina harus berlokasi di kota Madinah',
+            //             'data' => null
+            //         ], 422);
+            //     }
+            // }
 
             $updateData = $request->only([
                 'tipe_paket_id',
